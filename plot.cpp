@@ -119,7 +119,7 @@ void Plot::drawLinearData(QPainter &painter)
     painter.save();
     painter.setClipRect(gx, gy, gw, gh);
     for(int i=minValueX; i<maxValueX; i++)
-        painter.drawLine(QLineF(gx+(i-minValueX)*dx, gmy-(dataSeries[i]*dy), gx+(i-minValueX+1)*dx, gmy-(dataSeries[i+1]*dy)));
+        painter.drawLine(QLineF(gx+(i-minValueX)*dx, gmy-(chars[0][i]*dy), gx+(i-minValueX+1)*dx, gmy-(chars[0][i+1]*dy)));
     painter.restore();
 }
 

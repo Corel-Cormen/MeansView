@@ -12,6 +12,7 @@
 #define DSIZE 8192
 #define DSIZE2 (DSIZE/2)
 #define PSIZE 512
+#define PSIZE2 (PSIZE/2)
 
 #define FFT_SIZE 9600
 #define FFT_SIZE2 (FFT_SIZE/2)
@@ -46,7 +47,7 @@ private:
     QByteArray senddata;
     QByteArray readdata;
     bool flagToWrite = false;
-    QString fileName = "data.txt";
+    QString fileName = "/Users/ki_11/Desktop/build-MeasView-Desktop_Qt_5_15_2_clang_64bit-Debug/data.txt";
 
     QVector<double> magnitudeData;
     QVector<double> phaseData;

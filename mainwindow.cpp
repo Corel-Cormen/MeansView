@@ -17,6 +17,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(&serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(&serial, SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(error(QSerialPort::SerialPortError)));
 
+    ui->plot->chars.resize(3);
+    ui->plot->chars[0].resize(DSIZE2);                              // normal read data ploting
+    ui->plot->chars[1].resize(FFT_SIZE2);                           // fft data ploting
+    ui->plot->chars[2].resize(ui->plot->chars[1].size()/10);        // fft as bars ploting
+    ui->plot->chars[0].fill(0);
+    ui->plot->chars[1].fill(0);
+    ui->plot->chars[2].fill(0);
+
     ui->plot->counterData = 0;
     ui->plot->plotData.resize(PSIZE);
     ui->plot->plotData.fill(0);
@@ -101,28 +109,25 @@ void MainWindow::sendCommand()
 
 void MainWindow::readData()
 {
-    if (serial.size() >= DSIZE) {
+    static uint32_t cnt = 0;
+    if (serial.size() >= PSIZE) {
 
-        readdata=serial.read(DSIZE);
+        readdata=serial.read(PSIZE);
 
         uint16_t *sample=reinterpret_cast<uint16_t*>(readdata.data());
-        for (int n=0; n<ui->plot->plotData.size(); n++) {
-            ui->plot->plotData[n]=(sample[n]-32768)/32768.0;
+        for (int n=0; n < PSIZE2; n++) {
+            ui->plot->chars[0][cnt+n] = (sample[n]-32768)/32768.0;
         }
 
-        int i = 0;
-        while(i < PSIZE)
+        cnt += PSIZE2;
+        if(cnt >= (DSIZE2))
         {
-            ui->plot->dataSeries[ui->plot->counterData] = ui->plot->plotData[i];
-            i++;
-            ui->plot->counterData++;
+            cnt = 0;
         }
-
-        if(ui->plot->counterData >= DSIZE2)
-            ui->plot->counterData = 0;
-
         if(flagToWrite)
+        {
             writeData();
+        }
 
         calculateFFT();
         ui->plot_2->dataSeries=magnitudeData;
@@ -148,7 +153,7 @@ void MainWindow::calculateFFT()
     fftData.fill(0);
     for(int i=0;i<DSIZE2; i++) {
 
-        fftData[static_cast<uint>(i)].real(ui->plot->dataSeries[i]*fftWin[i]);
+        fftData[static_cast<uint>(i)].real(ui->plot->chars[1][i]*fftWin[i]);
         fftData[static_cast<uint>(i)].imag(0);
     }
 

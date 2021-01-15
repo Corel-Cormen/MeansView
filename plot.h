@@ -16,6 +16,7 @@ public:
         BarPlot
     };
     uint32_t plotMode=0;
+    QVector<QVector<double>> chars;
     QVector<double> dataSeries;
     QVector<double> plotData;
     int counterData;
