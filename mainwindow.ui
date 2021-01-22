@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>989</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,13 @@
          </widget>
         </item>
         <item>
+         <widget class="Plot" name="plot_4" native="true">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="Plot" name="plot_2" native="true">
           <property name="enabled">
            <bool>true</bool>
@@ -60,8 +67,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>21</height>
+     <width>989</width>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -78,6 +85,8 @@
    </attribute>
    <addaction name="actionRun"/>
    <addaction name="actionSave"/>
+   <addaction name="actionOpenFile"/>
+   <addaction name="actionFilter"/>
   </widget>
   <action name="actionRun">
    <property name="checkable">
@@ -101,6 +110,24 @@
    </property>
    <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionFilter">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/iconfinder_filter_1608702.png</normaloff>:/icons/iconfinder_filter_1608702.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter</string>
+   </property>
+  </action>
+  <action name="actionOpenFile">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/uploadFile.png</normaloff>:/icons/uploadFile.png</iconset>
+   </property>
+   <property name="text">
+    <string>OpenFile</string>
    </property>
   </action>
  </widget>

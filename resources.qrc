@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>icons/run.png</file>
         <file>icons/save-icon.png</file>
+        <file>icons/iconfinder_filter_1608702.png</file>
+        <file>icons/uploadFile.png</file>
     </qresource>
 </RCC>

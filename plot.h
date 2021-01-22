@@ -16,9 +16,7 @@ public:
         BarPlot
     };
     uint32_t plotMode=0;
-    QVector<QVector<double>> chars;
-    QVector<double> dataSeries;
-    QVector<double> plotData;
+    QVector<double> *dataPlot;
     int counterData;
     QColor backgroundColor=Qt::black;
     QColor gridColor=Qt::gray;

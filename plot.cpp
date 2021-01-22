@@ -118,8 +118,8 @@ void Plot::drawLinearData(QPainter &painter)
     painter.setPen(pen);
     painter.save();
     painter.setClipRect(gx, gy, gw, gh);
-    for(int i=minValueX; i<maxValueX; i++)
-        painter.drawLine(QLineF(gx+(i-minValueX)*dx, gmy-(chars[0][i]*dy), gx+(i-minValueX+1)*dx, gmy-(chars[0][i+1]*dy)));
+    for(int i = minValueX; i < maxValueX; i++)
+        painter.drawLine(QLineF(gx+(i-minValueX)*dx, gmy-((*dataPlot)[i]*dy), gx+(i-minValueX+1)*dx, gmy-((*dataPlot)[i+1]*dy)));
     painter.restore();
 }
 
@@ -136,8 +136,8 @@ void Plot::drawLogData(QPainter &painter)
     painter.save();
     painter.setClipRect(gx, gy, gw, gh);
     for(int i=minValueX; i<maxValueX-1; i++)
-        painter.drawLine(QLineF(gx+(log10(i)-log10(minValueX))*dx, gmy+(20*log10(1/(dataSeries[i]))*dy),
-                                gx+(log10(i+1)-log10(minValueX))*dx, gmy+(20*log10(1/(dataSeries[i+1]))*dy)));
+        painter.drawLine(QLineF(gx+(log10(i)-log10(minValueX))*dx, gmy+(20*log10(1/((*dataPlot)[i]))*dy),
+                                gx+(log10(i+1)-log10(minValueX))*dx, gmy+(20*log10(1/((*dataPlot)[i+1]))*dy)));
     painter.restore();
 }
 
@@ -215,20 +215,20 @@ void Plot::drawBarData(QPainter &painter){
     painter.setPen(pen);
     plotColor.setAlpha(128);
     painter.setBrush(plotColor);
-     QFont font;
+    QFont font;
 
-     font.setPointSize(10);
-     painter.setFont(font);
-     painter.save();
+    font.setPointSize(10);
+    painter.setFont(font);
+    painter.save();
 
-     painter.setClipRect(gx-1, gy-1, gw +1, gh+1);
+    painter.setClipRect(gx-1, gy-1, gw +1, gh+1);
 
-     for(int i = minValueX; i <maxValueX; i++)
-     {
-         painter.drawRect(QRectF(gx + (i - minValueX) * dx, gmy, 0.8 * dx, -dataSeries[i] * dy));
-     }
+    for(int i = minValueX; i < maxValueX; i++)
+    {
+        painter.drawRect(QRectF(gx + (i - minValueX) * dx, gmy, 0.8 * dx, -(*dataPlot)[i] * dy));
+    }
 
-     painter.restore();
+    painter.restore();
 
 }
 

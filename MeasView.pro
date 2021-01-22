@@ -9,16 +9,24 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    filter.cpp \
+    filterdialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    opendatadialog.cpp \
     plot.cpp
 
 HEADERS += \
+    filter.h \
+    filterdialog.h \
     mainwindow.h \
+    opendatadialog.h \
     plot.h
 
 FORMS += \
-    mainwindow.ui
+    filterdialog.ui \
+    mainwindow.ui \
+    opendatadialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -6,6 +6,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 #include <armadillo>
+#include <opendatadialog.h>
 
 #define FS 96000
 
@@ -32,28 +33,39 @@ public:
 private slots:
     void sendCommand();
     void readData();
-    void writeData();
     void error(QSerialPort::SerialPortError error);
     void closeEvent(QCloseEvent *event);
     void changeStatusToWrite();
+    void openFilterWindow();
 
     void on_verticalSlider_valueChanged(int value);
 
+    void on_actionOpenFile_triggered();
+
 private:
+    QVector<QVector<double>> data;
+
     Ui::MainWindow *ui;
-     void calculateFFT();
+    OpenDataDialog *openDataDialog;
+    void calculateFFT();
 
     QSerialPort serial;
     QByteArray senddata;
     QByteArray readdata;
     bool flagToWrite = false;
+#ifdef __linux__
+    QString fileName = "data.txt";
+#elif __APPLE__
     QString fileName = "/Users/ki_11/Desktop/build-MeasView-Desktop_Qt_5_15_2_clang_64bit-Debug/data.txt";
-
+#endif
     QVector<double> magnitudeData;
     QVector<double> phaseData;
     QVector<double> fftWin;
 
     arma::cx_vec fftData;
 
+    void calculateBarData();
+    void writeData(int p1, int p2);
+    void filtration();
 };
 #endif // MAINWINDOW_H
