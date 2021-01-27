@@ -18,6 +18,8 @@ public:
 private slots:
     void on_buttonBox_accepted();
 
+    void on_moduleButton_clicked();
+
 private:
     Ui::FilterDialog *ui;
 };

@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <armadillo>
 #include <opendatadialog.h>
+#include <QStandardPaths>
 
 #define FS 96000
 
@@ -53,11 +54,8 @@ private:
     QByteArray senddata;
     QByteArray readdata;
     bool flagToWrite = false;
-#ifdef __linux__
-    QString fileName = "data.txt";
-#elif __APPLE__
-    QString fileName = "/Users/ki_11/Desktop/build-MeasView-Desktop_Qt_5_15_2_clang_64bit-Debug/data.txt";
-#endif
+    QString fileName = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + QString("/data.txt");
+
     QVector<double> magnitudeData;
     QVector<double> phaseData;
     QVector<double> fftWin;
@@ -67,5 +65,6 @@ private:
     void calculateBarData();
     void writeData(int p1, int p2);
     void filtration();
+    void calculateModule();
 };
 #endif // MAINWINDOW_H

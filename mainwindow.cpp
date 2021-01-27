@@ -49,10 +49,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     double f1 = 10;
     double f2 = 10000;
     double scl = FFT_SIZE/static_cast<double>(FS);
+    Filter::setSize(FFT_SIZE);
+    Filter::rectangularWindow(1);
 
     ui->plot_2->plotMode = Plot::LogPlot;
     ui->plot_2->plotColor = Qt::green;
-    ui->plot_2->setRange((f1 * scl), f2 * scl, -100, 0);
+    ui->plot_2->setRange((f1 * scl), f2 * scl, -200, 0);
     ui->plot_2->setAxes(0, f1, f2, 10, -100, 0);
 
     ui->plot_3->plotMode = Plot::BarPlot;
@@ -141,6 +143,11 @@ void MainWindow::readData()
         ui->plot_2->update();
         ui->plot_3->update();
 
+        if(Filter::getStatusModule())
+            ui->plot_4->setRange(0, DSIZE2-1, 0, 1);
+        else
+            ui->plot_4->setRange(0, DSIZE2-1, -1, 1);
+
         filtration();
         ui->plot_4->update();
     }
@@ -169,11 +176,16 @@ void MainWindow::calculateFFT()
 
     fftData=arma::fft(fftData);
 
+    for(uint i = 0; i < fftData.size(); i++){
+        fftData[i] *= (*Filter::getFilterFFT())[i];
+    }
+
     for(int i = 0; i < FFT_SIZE2; i++)
     {
         magnitudeData[i]=abs(fftData[static_cast<uint>(i)])/(FFT_SIZE2);
         phaseData[i]=arg(fftData[static_cast<uint>(i)]);
     }
+
 }
 
 void MainWindow::on_verticalSlider_valueChanged(int value)
@@ -266,9 +278,22 @@ void MainWindow::openFilterWindow()
 
 void MainWindow::on_actionOpenFile_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open saved data"), QDir::currentPath(), tr("Text Files (*.txt)"));
-    qDebug() << fileName;
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open saved data"),
+                                                    QStandardPaths::writableLocation(QStandardPaths::DesktopLocation),
+                                                    tr("Text Files (*.txt)"));
 
-    openDataDialog = new OpenDataDialog(this, fileName);
-    openDataDialog->show();
+    if(fileName != nullptr)
+    {
+        openDataDialog = new OpenDataDialog(this, fileName);
+        openDataDialog->show();
+    }
+}
+
+void MainWindow::calculateModule()
+{
+    for(int i = 0; i < ui->plot_4->dataPlot->size(); i++)
+    {
+        if(ui->plot_4->dataPlot->at(i) < 0)
+            (*ui->plot_4->dataPlot)[i] *= -1;
+    }
 }
