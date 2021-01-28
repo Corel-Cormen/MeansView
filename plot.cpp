@@ -1,5 +1,6 @@
 #include "plot.h"
 #include "armadillo"
+#include "plotproperties.h"
 using namespace arma;
 
 Plot::Plot(QWidget *parent) : QWidget(parent)
@@ -232,4 +233,9 @@ void Plot::drawBarData(QPainter &painter){
 
 }
 
-
+void Plot::mouseDoubleClickEvent(QMouseEvent *){
+    emit doubleClicked();
+    PlotProperties plotProperties(this);
+    plotProperties.setModal(true);
+    plotProperties.exec();
+}

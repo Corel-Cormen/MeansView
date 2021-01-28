@@ -14,19 +14,22 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     opendatadialog.cpp \
-    plot.cpp
+    plot.cpp \
+    plotproperties.cpp
 
 HEADERS += \
     filter.h \
     filterdialog.h \
     mainwindow.h \
     opendatadialog.h \
-    plot.h
+    plot.h \
+    plotproperties.h
 
 FORMS += \
     filterdialog.ui \
     mainwindow.ui \
-    opendatadialog.ui
+    opendatadialog.ui \
+    plotproperties.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

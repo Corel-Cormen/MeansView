@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(&serial, &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(&serial, SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(error(QSerialPort::SerialPortError)));
     connect(ui->actionFilter, &QAction::triggered, this, &MainWindow::openFilterWindow);
+    connect(ui->plot, SIGNAL(Plot::doubleClicked), this, SLOT(Plot::onDoubleClicked));
 
     data.resize(4);
     data[0].fill(0).resize(DSIZE2);                                 // normal read data ploting
@@ -54,8 +55,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     ui->plot_2->plotMode = Plot::LogPlot;
     ui->plot_2->plotColor = Qt::green;
-    ui->plot_2->setRange((f1 * scl), f2 * scl, -200, 0);
-    ui->plot_2->setAxes(0, f1, f2, 10, -100, 0);
+    ui->plot_2->setRange((f1 * scl), f2 * scl, -250, 0);
+    ui->plot_2->setAxes(0, f1, f2, 10, -200, 0);
 
     ui->plot_3->plotMode = Plot::BarPlot;
     ui->plot_3->plotColor = Qt::green;
@@ -135,20 +136,21 @@ void MainWindow::readData()
         {
             writeData(cnt, cnt+PSIZE2);
         }
-
-        calculateFFT();
         *ui->plot_2->dataPlot = magnitudeData;
+
+
+
+        filtration();
+        if(Filter::getStatusModule())
+        {
+            calculateModule();
+        }
+        calculateFFT();
         calculateBarData();
+
         ui->plot->update();
         ui->plot_2->update();
         ui->plot_3->update();
-
-        if(Filter::getStatusModule())
-            ui->plot_4->setRange(0, DSIZE2-1, 0, 1);
-        else
-            ui->plot_4->setRange(0, DSIZE2-1, -1, 1);
-
-        filtration();
         ui->plot_4->update();
     }
 }
@@ -194,12 +196,11 @@ void MainWindow::on_verticalSlider_valueChanged(int value)
     for(int n = 0; n < (*ui->plot->dataPlot).size(); n++)
         (*ui->plot->dataPlot)[n] = (5.0*sin(2*M_PI*f*n/static_cast<double>(FS)));
 
-    calculateFFT();
-
-    (*ui->plot_2->dataPlot) = magnitudeData;
-
-    calculateBarData();
     filtration();
+    (*ui->plot_2->dataPlot) = magnitudeData;
+    calculateFFT();
+    calculateBarData();
+
     ui->plot->update();
     ui->plot_2->update();
     ui->plot_3->update();
@@ -262,7 +263,7 @@ void MainWindow::writeData(int p1, int p2)
         QTextStream out(&file);
         for(int i = p1; i < p2; i++)
         {
-            out << (*ui->plot->dataPlot)[i] << ' ';
+            out << (*ui->plot_4->dataPlot)[i] << ' ';
         }
         out << '\n';
     }
@@ -294,6 +295,8 @@ void MainWindow::calculateModule()
     for(int i = 0; i < ui->plot_4->dataPlot->size(); i++)
     {
         if(ui->plot_4->dataPlot->at(i) < 0)
+        {
             (*ui->plot_4->dataPlot)[i] *= -1;
+        }
     }
 }

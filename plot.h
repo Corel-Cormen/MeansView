@@ -17,13 +17,22 @@ public:
     };
     uint32_t plotMode=0;
     QVector<double> *dataPlot;
-    int counterData;
     QColor backgroundColor=Qt::black;
     QColor gridColor=Qt::gray;
     QColor textColor=Qt::white;
     QColor plotColor=Qt::red;
     void setRange(double minX, double maxX, double minY, double maxY);
     void setAxes(int divX, double minX, double maxX, int divY, double minY, double maxY);
+
+    inline double getMinValueX() { return minValueX; }
+    inline double getMaxValueX() { return maxValueX; }
+    inline double getMinAxisX() { return minAxisX; }
+    inline double getMaxAxisX() { return maxAxisX; }
+    inline double getMinValueY() { return minValueY; }
+    inline double getMaxValueY() { return maxValueY; }
+    inline double getMinAxisY() { return minAxisY; }
+    inline double getMaxAxisY() { return maxAxisY; }
+
 private:
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
@@ -44,5 +53,9 @@ private:
     double minAxisX= 0, maxAxisX=1;
     double minAxisY=-1, maxAxisY=1;
 signals:
+    void doubleClicked();
+
+protected:
+    void mouseDoubleClickEvent(QMouseEvent *);
 };
 #endif // PLOT_H
