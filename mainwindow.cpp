@@ -75,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     magnitudeData.resize(FFT_SIZE2);
     phaseData.resize(FFT_SIZE2);
 
+    updateDataMark();
+
     ui->statusbar->showMessage("No device");
     QString portname;
     const auto infos = QSerialPortInfo::availablePorts();
@@ -152,6 +154,7 @@ void MainWindow::readData()
         ui->plot_2->update();
         ui->plot_3->update();
         ui->plot_4->update();
+        updateDataMark();
     }
 }
 
@@ -205,6 +208,7 @@ void MainWindow::on_verticalSlider_valueChanged(int value)
     ui->plot_2->update();
     ui->plot_3->update();
     ui->plot_4->update();
+    updateDataMark();
 
     this->setWindowTitle(QString("freq: %1").arg(f));
 
@@ -222,10 +226,16 @@ void MainWindow::filtration()
 {
     for(int i = 0; i < (*ui->plot->dataPlot).size() - Filter::getFilter().length(); i++)
     {
-        (*ui->plot_4->dataPlot)[i] = 0;
         for(int j = 0; j < Filter::getFilter().length(); j++)
         {
-            (*ui->plot_4->dataPlot)[i] += (*ui->plot->dataPlot)[i+j] * Filter::getFilter().at(j);
+            if(j == 0)
+            {
+                (*ui->plot_4->dataPlot)[i] = (*ui->plot->dataPlot)[i+j] * Filter::getFilter().at(j);
+            }
+            else
+            {
+                (*ui->plot_4->dataPlot)[i] += (*ui->plot->dataPlot)[i+j] * Filter::getFilter().at(j);
+            }
         }
     }
 }
@@ -299,4 +309,14 @@ void MainWindow::calculateModule()
             (*ui->plot_4->dataPlot)[i] *= -1;
         }
     }
+}
+
+void MainWindow::updateDataMark()
+{
+    ui->plot1ValueX->setText(QString::number(static_cast<int>(ui->plot->markerX)));
+    ui->plot1ValueY->setText(QString::number((*ui->plot->dataPlot)[static_cast<int>(ui->plot->markerX)]));
+    ui->plot2ValueX->setText(QString::number(static_cast<int>(ui->plot_4->markerX)));
+    ui->plot2ValueY->setText(QString::number((*ui->plot_4->dataPlot)[static_cast<int>(ui->plot_4->markerX)]));
+    if(ui->plot_2->markerX != 0)
+        ui->plot3ValueY->setText(QString::number((*ui->plot_2->dataPlot)[static_cast<int>(ui->plot_2->markerX*(FFT_SIZE2/1000.0)-1)]));
 }

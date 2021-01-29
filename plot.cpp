@@ -52,10 +52,14 @@ void Plot::paintEvent(QPaintEvent *event)
     case LinearPlot:
         drawLinearGrid(painter);
         drawLinearData(painter);
+        drawMarkers(painter);
+        getMousePosition(mosuePosX, mosuePosY);
         break;
     case LogPlot:
         drawLogGrid(painter);
         drawLogData(painter);
+        drawMarkers(painter);
+        getMousePosition(mosuePosX, mosuePosY);
         break;
     case BarPlot:
         drawLinearGrid(painter);
@@ -238,4 +242,63 @@ void Plot::mouseDoubleClickEvent(QMouseEvent *){
     PlotProperties plotProperties(this);
     plotProperties.setModal(true);
     plotProperties.exec();
+}
+
+void Plot::drawMarkers(QPainter &painter)
+{
+
+    dx=gw/(maxValueX - minValueX);
+    dy=gh/(maxValueY - minValueY);
+
+    QPen pen;
+    pen.setStyle(Qt::DotLine);
+    pen.setColor(Qt::red);
+    pen.setWidth(1);
+    painter.setPen(pen);
+
+    painter.drawLine(QLineF(gx+(markerX-minValueX)*dx, gy, gx+(markerX-minValueX)*dx, gy+gh));
+
+}
+
+void Plot::getMousePosition(int x, int y)
+{
+    double dmkx = 0;
+    if(plotMode == LinearPlot)
+        dmkx = gw/(maxValueX - minValueX);
+    if(plotMode == LogPlot)
+        dmkx = gw/(log10(maxValueX)-log10(minValueX));
+
+    double dmky=gh/(maxValueY - minValueY);
+
+    if(x < gx)
+        x = gx;
+    if(x > gx + gw)
+        x = gx + gw;
+    if(y < gy)
+        y = gy;
+    if(y > gy + gh)
+        y = gy + gh;
+
+    markerX = 0;
+    if(plotMode == LinearPlot)
+        markerX = minValueX+((x-gx)/dmkx);
+
+    if(plotMode == LogPlot)
+    {
+        markerX = log10(minValueX)+((x-gx)/dmkx)*334;
+    }
+
+    markerY = maxValueY-((y-gy)/dmky);
+
+    mosuePosX = x;
+    mosuePosY = y;
+
+    update();
+}
+
+void Plot::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton){
+        getMousePosition(event->x(), event->y());
+    }
 }

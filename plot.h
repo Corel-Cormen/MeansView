@@ -2,6 +2,7 @@
 #define PLOT_H
 #include <QWidget>
 #include <QPainter>
+#include <QMouseEvent>
 #include <QDebug>
 #define MX 40
 #define MY 20
@@ -21,8 +22,11 @@ public:
     QColor gridColor=Qt::gray;
     QColor textColor=Qt::white;
     QColor plotColor=Qt::red;
+    volatile double markerX=0, markerY=0;
+    int mosuePosX = 0, mosuePosY = 0;
     void setRange(double minX, double maxX, double minY, double maxY);
     void setAxes(int divX, double minX, double maxX, int divY, double minY, double maxY);
+    void getMousePosition(int x, int y);
 
     inline double getMinValueX() { return minValueX; }
     inline double getMaxValueX() { return maxValueX; }
@@ -36,6 +40,7 @@ public:
 private:
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
     void drawLinearGrid(QPainter &painter);
     void drawLinearData(QPainter &painter);
@@ -44,6 +49,8 @@ private:
     void drawSemiGrid(QPainter &painter);
     void drawSemiData(QPainter &painter);
     void drawBarData(QPainter &painter);
+
+    void drawMarkers(QPainter &painter);
 
     double dx, dy, dvx, dvy;
     int gx, gy, gw, gh, gmy;

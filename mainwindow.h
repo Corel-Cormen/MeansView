@@ -66,5 +66,7 @@ private:
     void writeData(int p1, int p2);
     void filtration();
     void calculateModule();
+
+    void updateDataMark();
 };
 #endif // MAINWINDOW_H
