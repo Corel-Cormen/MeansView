@@ -1,6 +1,7 @@
 # MeansView
 Aplikacja do przetwarzania odczytanego sygnału.
 * C++/Qt
+* [Armadillo](http://arma.sourceforge.net/)
 * [Sterownik](https://github.com/Corel-Cormen/ODP_MeansViewUSB)
 
 # Działanie
