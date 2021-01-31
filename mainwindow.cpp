@@ -55,8 +55,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     ui->plot_2->plotMode = Plot::LogPlot;
     ui->plot_2->plotColor = Qt::green;
-    ui->plot_2->setRange((f1 * scl), f2 * scl, -250, 0);
-    ui->plot_2->setAxes(0, f1, f2, 10, -200, 0);
+    ui->plot_2->setRange((f1 * scl), f2 * scl, -100, 0);
+    ui->plot_2->setAxes(0, f1, f2, 10, -100, 0);
 
     ui->plot_3->plotMode = Plot::BarPlot;
     ui->plot_3->plotColor = Qt::green;
@@ -66,12 +66,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     fftData.resize(FFT_SIZE);
     fftData.fill(0);
     fftWin.resize(FFT_SIZE);
-
-    // Rectangular Window
-    fftWin.fill(1);
-    // Hann Window
-    for(int i = 0; i < FFT_SIZE; i++)
-        fftWin[i] = (0.5*(1-cos(2*M_PI*i/(FFT_SIZE-1))));
     magnitudeData.resize(FFT_SIZE2);
     phaseData.resize(FFT_SIZE2);
 
@@ -175,15 +169,10 @@ void MainWindow::calculateFFT()
     fftData.fill(0);
     for(int i = 0; i < DSIZE2; i++)
     {
-        fftData[static_cast<uint>(i)].real((*ui->plot->dataPlot)[i]*fftWin[i]);
+        fftData[static_cast<uint>(i)].real((*ui->plot->dataPlot)[i]*(*Filter::getFilterFFT())[i]);
         fftData[static_cast<uint>(i)].imag(0);
     }
-
     fftData=arma::fft(fftData);
-
-    for(uint i = 0; i < fftData.size(); i++){
-        fftData[i] *= (*Filter::getFilterFFT())[i];
-    }
 
     for(int i = 0; i < FFT_SIZE2; i++)
     {
